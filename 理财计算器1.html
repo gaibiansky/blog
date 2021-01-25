@@ -1,0 +1,140 @@
+ <div>
+   <div class="ircond"><h3 class="text-center">理财计算器（仅供参考）</h3>
+</div>
+<div class="blank"></div>
+<div class="ircalc"><div><label>期　　限：</label> <input id="term" type="text"> 天</div>
+<div><label>预期年化收益率：</label> <input id="syl" type="text"> %</div>
+<div><label>起购金额：</label> <input id="amount" type="text"> 元</div>
+<div class="blank"></div>
+<div><span class="b1" onclick="count()">预算</span> <span class="b2" onclick="resetting()">重置</span></div>
+<div class="blank"></div>
+<div><label>预计收益：</label> <input id="result" type="text"> 元</div>
+<p class="mark">温馨提示：<br>
+1. 理财计算器的数据、计算结果仅供参考。具体以办理业务或交易实际结果为准，据此投资风险自负。<br>
+2. 理财计算器在计息过程中，一年以360天为标准。</p>
+</div>
+<style type="text/css">
+.ircond h3{font-size:16px;text-align:center;padding-bottom:20px;}
+.ircalc>div{padding-bottom: 20px;padding-left: 210px;}
+.ircalc label{padding-right: 15px;font-size:14px;}
+.ircalc select{border: none;background: #f6f6f6;color: #999;line-height: 16px;font-size: 14px;padding: 4px 5px;width: 170px;cursor: pointer;}
+.ircalc input{border: none;background: #f6f6f6;color: #999;line-height: 16px;font-size: 14px;padding: 4px 5px;width: 160px;}
+.ircalc .b1{font-size: 16px;padding: 6px 26px;border: none;border-bottom: 1px solid #e3e3e3;border-radius: 8px;color: #fff;background: #fa9900;cursor: pointer;font-family: "Microsoft YaHei";*padding: 3px 13px;margin-right: 75px;margin-left: 10px;}
+.ircalc .b2{font-size: 16px;padding: 6px 26px;border: none;border-bottom: 1px solid #e3e3e3;border-radius: 8px;color: #fff;background: #c90401;cursor: pointer;font-family: "Microsoft YaHei";*padding: 3px 13px;}
+.ircalc .b3{font-size: 16px;padding: 6px 26px;border: none;border-bottom: 1px solid #e3e3e3;border-radius: 8px;color: #fff;background: #fa9900;cursor: pointer;font-family: "Microsoft YaHei";*padding: 3px 13px;margin-left: 110px;}
+
+/*3.26*/
+.ircalc > div{padding-left:120px;*padding-left:90px;}
+.ircalc label{width:150px;display:inline-block;*display:inline;text-align:right;padding-right:10px;*float:left;}
+
+
+.ircalc .b1{margin-left:100px;}
+.ircalc .btn{padding:30px 0px;padding-left:120px;}
+.ircalc .col{padding-bottom:20px;}
+.ircalc .disabled{background:#fff8e7;cursor:default;}
+.loan-stru{overflow:hidden;padding:20px 0px;}
+.loan-stru .tag-left{float:left;width:50%;padding-bottom:20px;*padding-bottom:0px;}
+.loan-stru .tag-right{float:left;width:50%;padding-bottom:20px;*padding-bottom:0px;}
+.loan-stru .title{font-weight:bold;line-height:24px;padding-bottom:20px;overflow:hidden;text-indent:45px;}
+.loan-stru .item{padding-bottom:20px;}
+.loan-stru .biao{text-indent:125px;}
+.loan-stru .biao a{text-decoration:underline;color:#00a0e9;}
+.loan-stru label{width:110px;display:inline-block;*display:inline;text-align:right;padding-right:10px;*float:left;}
+.loan-stru select{border: none;background: #f6f6f6;color: #999;line-height: 16px;font-size: 14px;padding: 4px 5px;width: 170px;cursor: pointer;}
+.loan-stru input{border: none;background: #f6f6f6;color: #999;line-height: 16px;font-size: 14px;padding: 4px 5px;width: 160px;}
+.loan-btn{padding-top:20px;}
+.loan-btn .b1{margin-left:185px;}
+.ircalc .loan-result{line-height:20px;text-align:center;padding-left:0px;padding:10px 0px;font-size:14px;font-weight:bold;}
+.loan-just{position:relative;}
+.loan-just label{*float:left;}
+.loan-just .title{position:absolute;line-height:24px;font-weight:bold;color:#454545;top:0px;;left:50px;font-size:15px;}
+.loan-just .radio{padding-left:172px;}
+.loan-just .radio input{width:auto;margin-right:10px;background:none;margin-right:0px \9;}</style>
+<script type="text/javascript">
+	function resetting(){
+		$("#term").val("");
+		$("#syl").val("");
+		$("#amount").val("");
+	}
+	function count(){
+		var term = document.getElementById("term").value;
+		var amount = document.getElementById("amount").value;
+		var syl = document.getElementById("syl").value;
+	  
+	  if(term==""){
+	  	 alert("请输入购买天数");
+       return;
+	  }else if(amount==""){
+        alert("请输入起购金额");
+        return;
+    }else if(syl==""){
+        alert("请输入预期年化收益率");
+        return;
+    }else if(isNaN(term)){
+        alert("购买天数必须是数字");
+        return;
+    }
+    else if(isNaN(amount)){
+        alert("起购金额必须是数字");
+        return;
+    }else if(isNaN(syl)){
+        alert("预期年化收益率必须是数字");
+        return;
+    }else if(term<0){
+        alert("购买天数必须大于0");
+        return;
+    }else if(amount<0){
+        alert("起购金额必须大于0");
+        return;
+    }else if(syl<0){
+        alert("预期年化收益率必须大于0");
+        return;
+    }
+    //本金 * 年收益率/360 * 天数
+    //var result = amount*1+amount*syl/100/360*term;
+    var result = amount*syl/100/360*term;
+    document.getElementById("result").value = changeTwoDecimal(result);
+	}
+	
+	function changeTwoDecimal(x)
+{
+  var f_x = parseFloat(x);
+  if (isNaN(f_x))
+  {
+ 
+    return false;
+   }
+    f_x = Math.round(f_x *100)/100;
+
+return f_x;
+}
+</script>
+ 
+ </div> 
+</div>       </div> 
+      <br> 
+      <script>
+$(function(){
+    var tabIndex= request("tabIndex");
+    $(".bottom_mid_title span a").each(function(){
+        $(this).css({"color":"#666"});
+    });
+    $(".bottom_mid_title span a").mouseover(function(){
+        $(".bottom_mid_title span a").css({"background":"url(/hubeiRCC/resource/cms/2015/03/icon14.png)","color":"#666"});
+        $(this).css({"background":"url(/hubeiRCC/resource/cms/2015/03/icon14-on.png) center","color":"#FFF"});
+        $(".article_tablebox").css("display","none");
+        $(".article_tablebox").eq($(this).index()).css("display","block");
+    });
+    if(tabIndex>0){
+        $(".article_tablebox").css("display","none");
+        $(".article_tablebox").eq(tabIndex).css("display","block");
+        $(".bottom_mid_title span a").eq(tabIndex).css({"background":"url(/hubeiRCC/resource/cms/2015/03/icon14-on.png) center","color":"#FFF"});
+    }
+    else{
+        $(".article_tablebox").css("display","none");
+        $(".article_tablebox").eq(tabIndex).css("display","block");
+        $(".bottom_mid_title span a").eq(0).css({"background":"url(/hubeiRCC/resource/cms/2015/03/icon14-on.png) center","color":"#FFF"});
+    }
+});
+</script> 
+      <div class="clear"></div> 
